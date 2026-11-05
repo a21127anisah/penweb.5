@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Latihan JS</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f1f5f9; margin: 0; padding: 16px; }
+    section { background: #fff; border-left: 6px solid #2563eb; padding: 16px; margin-bottom: 20px; }
+    h2 { margin: 0 0 12px; font-size: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+    .card { border: 1px solid #e2e8f0; border-top: 3px solid #2563eb; padding: 10px; background: #f8fafc; }
+    .card h3 { margin: 0 0 8px; font-size: 13px; color: #2563eb; }
+    pre { margin: 0; background: #f1f5f9; padding: 8px; font-size: 13px; min-height: 60px; overflow-x: auto; }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+
+  <script>
+    const logAsli = console.log;
+    const hasil = {};
+    let aktif = null;
+
+    function mulai(nama) { aktif = hasil[nama] = []; }
+
+    console.log = (...args) => {
+      args.join(" ").split("\n").forEach((l) => aktif.push(l));
+      logAsli(...args);
+    };
+  </script>
+
+  <script>mulai("percabangan");</script>
+  <script src="assets/js/latihan-percabangan.js"></script>
+  <script>mulai("perulangan");</script>
+  <script src="assets/js/latihan-perulangan.js"></script>
+  <script>mulai("function");</script>
+  <script src="assets/js/latihan-function.js"></script>
+  <script>mulai("pola");</script>
+  <script src="assets/js/latihan-pola.js"></script>
+
+  <script>
+    // [judul soal, jumlah baris hasil]
+    const bagian = [
+      { nama: "Latihan Percabangan", file: "percabangan",
+        soal: [["Soal 1: Sistem Penilaian Sederhana", 2], ["Soal 2: Konversi Kode Peran (Role)", 3]] },
+      { nama: "Latihan Perulangan", file: "perulangan",
+        soal: [["Soal 1: Cetak Angka 1 hingga 5", 5], ["Soal 2: Hitung Mundur (Countdown)", 4]] },
+      { nama: "Latihan Function & Logika", file: "function",
+        soal: [["Soal 1: FizzBuzz", 15], ["Soal 2: Cek Genap & Ganjil", 2], ["Soal 3: Balik String", 1]] }
+    ];
+
+    let html = "";
+    function kartu(judul, baris) {
+      return "<div class='card'><h3>" + judul + "</h3><pre>" + baris.join("\n") + "</pre></div>";
+    }
+
+    bagian.forEach((b) => {
+      let mulaiIdx = 0;
+      html += "<section><h2>" + b.nama + "</h2><div class='grid'>";
+      b.soal.forEach(([judul, jumlah]) => {
+        html += kartu(judul, hasil[b.file].slice(mulaiIdx, mulaiIdx + jumlah));
+        mulaiIdx += jumlah;
+      });
+      html += "</div></section>";
+    });
+
+    const grup = [];
+hasil["pola"].join("\n").split("\n").forEach((teks) => {
+  if (teks.startsWith("@@")) {
+    grup.push({ judul: teks.slice(2), baris: [] });
+  } else if (grup.length > 0 && teks.trim() !== "") {
+    grup[grup.length - 1].baris.push(teks);
+  }
+});
+    html += "<section><h2>Latihan Soal</h2><div class='grid'>";
+    grup.forEach((g) => { html += kartu(g.judul, g.baris); });
+    html += "</div></section>";
+
+    document.getElementById("app").innerHTML = html;
+  </script>
+</body>
+</html>
